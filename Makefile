@@ -2,7 +2,7 @@ include .env
 export
 
 build:
-	docker build ./cli -t serverless_toolbox
+	docker build . -t serverless_toolbox
 
 ssh:
 	docker run --rm -i -t \

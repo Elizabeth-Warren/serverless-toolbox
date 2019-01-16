@@ -18,3 +18,10 @@ RUN apt-get update && \
 RUN apt-get install curl gnupg -yq \
     && curl -sL https://deb.nodesource.com/setup_8.x | bash \
     && apt-get install nodejs -yq
+
+COPY ./bin/new-api /usr/local/bin/new-api
+RUN chmod +x /usr/local/bin/new-api
+
+# COPY ./bin/new-api.sh /new-api.sh
+# RUN chmod +x /new-api.sh
+# ENV new-api /new-api.sh
