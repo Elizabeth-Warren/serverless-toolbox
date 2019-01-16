@@ -1,6 +1,6 @@
 # serverless-toolbox 🛠
 
-Serverless Toolbox is a project that provides a small utility layer over [AWS SAM](https://aws.amazon.com/serverless/sam/) to improve developer workflow.
+Serverless Toolbox is a project that provides a small utility layer over [AWS SAM](https://aws.amazon.com/serverless/sam/) to make local setup simpler.
 
 ## Usage Requirements
 
