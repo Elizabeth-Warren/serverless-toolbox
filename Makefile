@@ -17,10 +17,6 @@ ssh:
 	serverless_toolbox \
 	bash
 
-sam:
+toolbox:
 	make build
 	make ssh
-
-# --net=host \
-
-# --host 0.0.0.0
