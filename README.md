@@ -1,6 +1,6 @@
-# serverless-toolbox
+# serverless-toolbox 🛠
 
-Serverless Toolbox is a project that provides a small utility layer over [AWS SAM](https://aws.amazon.com/serverless/sam/) to improve developer workflow. Fork of [Apex/actions/sam](https://github.com/apex/actions/tree/master/aws/sam) :sparkles:.
+Serverless Toolbox is a project that provides a small utility layer over [AWS SAM](https://aws.amazon.com/serverless/sam/) to improve developer workflow.
 
 ## Usage Requirements
 
@@ -31,85 +31,12 @@ $ SRC=~/dev/example-function make sam
 $ root@...:/ sam       # Run the 'sam' command for the help prompt
 ```
 
-Full CLI documentation can be found [here](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-command-reference.html).
+Full AWS SAM CLI documentation can be found [here](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-command-reference.html).
 
-When using the `sam local start-api` command, make sure to set the host parameter to `0.0.0.0` so your sibling container is properly exposed to the host.
+**WARNING**: The `sam local start-api` command is not recommended. Use unit tests locally and integration tests on development stacks.
 
-```sh
-$ root@...:/ sam local start-api --host 0.0.0.0
-```
+### Local CLI Tips
 
-The serverless-toolbox CLI container is bult with a Python image, but also includes `node` and `npm` for JS projects.
+The serverless-toolbox CLI container is bult with a Python image, but also includes `node` and `npm` for JS projects. Feel free to run `npm install|test (etc)` within the toolbox on your project using the same Node version as the Lambda environment.
 
 Lastly as a suggestion, the toolbox gitignore file will cover any `.env.*` file except for the example template, so feel free to save your various account credentials in standalone env files that you copy into the main `.env` as needed.
-
-## Github Actions
-
-The serverless-toolbox github actions provide a clear workflow for testing and deploying your serverless functions. To get started, create a Github workflow file in your project folder.
-
-```sh
-$ mkdir .github
-$ touch .github/main.workflow
-```
-
-Then add the following to your workflow template,
-
-```
-workflow "Deployment" {
-  on = "push"
-  resolves = [
-    "Build Notification",
-    "Deploy Notification",
-  ]
-}
-
-action "Build" {
-  uses = "apex/actions/aws/sam@master"
-  secrets = ["AWS_SECRET_ACCESS_KEY", "AWS_ACCESS_KEY_ID"]
-  args = "package --template-file template.yml --output-template-file out.yml --s3-bucket my-bucket-name"
-}
-
-action "Build Notification" {
-  needs = "Build"
-  uses = "apex/actions/slack@master"
-  secrets = ["SLACK_WEBHOOK_URL"]
-}
-
-action "Deploy" {
-  uses = "apex/actions/aws/sam@master"
-  needs = ["Build"]
-  secrets = ["AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY"]
-  args = "deploy --stack-name myapp --capabilities CAPABILITY_IAM --template-file out.yml"
-  env = {
-    AWS_DEFAULT_REGION = "us-west-2"
-  }
-}
-
-action "Deploy Notification" {
-  uses = "apex/actions/slack@master"
-  needs = ["Deploy"]
-  secrets = ["SLACK_WEBHOOK_URL"]
-}
-```
-
-This workflow requires the following secrets configured,
-
-- `AWS_ACCESS_KEY_ID` - Required.
-- `AWS_SECRET_ACCESS_KEY` - Required.
-- `SLACK_WEBHOOK_URL` - Optional.
-
-
-Ideal workflow
-
-1. Create PR
-2. [Test process]
- - slack notification
- - pr check
-3. Merge PR
-4. Function built and deployed to AWS
- - slack notification
- - apply label to PR?
-5. "api gateway staging" points at "latest" tag
-6. write a comment in the PR to promote it to production (or revert)
- - slack notification
- - apply label to PR?
