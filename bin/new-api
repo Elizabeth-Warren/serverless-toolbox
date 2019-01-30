@@ -1,3 +1,0 @@
-##!/usr/bin/env bash
-
-sam init -r nodejs8.10 -o ../tmp -n template && mv -v /tmp/template/* /app/
